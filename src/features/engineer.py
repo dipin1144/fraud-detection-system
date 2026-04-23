@@ -59,3 +59,27 @@ def run_feature_engineering(df_transaction, df_identity):
     df = drop_high_missing_features(df, threshold=0.5)
     df = encode_categoricals(df)
     return df
+
+def engineer_features(X_train, X_val, X_test):
+    """Wrapper to apply feature engineering on pre-split dataframes."""
+    import pandas as pd
+
+    def process(df):
+        df = df.copy()
+        df = add_time_features(df)
+        df = add_amount_features(df)
+        df = add_velocity_features(df)
+        df = drop_high_missing_features(df, threshold=0.5)
+        df = encode_categoricals(df)
+        # Align columns to train
+        return df
+
+    X_train_fe = process(X_train)
+    X_val_fe   = process(X_val)
+    X_test_fe  = process(X_test)
+
+    # Align val/test columns to train (in case drop_high_missing differs)
+    X_val_fe  = X_val_fe.reindex(columns=X_train_fe.columns, fill_value=0)
+    X_test_fe = X_test_fe.reindex(columns=X_train_fe.columns, fill_value=0)
+
+    return X_train_fe, X_val_fe, X_test_fe
