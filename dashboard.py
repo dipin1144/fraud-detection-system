@@ -74,7 +74,7 @@ if st.button('Analyze Transaction', type='primary', use_container_width=True):
         st.metric('Decision', 'FRAUD' if is_fraud else 'LEGITIMATE')
     with col_c:
         st.metric('Risk Level', risk_level)
-    st.progress(fraud_prob, text=f'Fraud Risk: {fraud_prob*100:.1f}%')
+    st.progress(int(fraud_prob * 100), text=f'Fraud Risk: {fraud_prob*100:.1f}%')
     if is_fraud:
         st.error('This transaction has been flagged as potentially fraudulent!')
     else:
